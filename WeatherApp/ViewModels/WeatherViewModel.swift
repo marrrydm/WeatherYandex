@@ -25,6 +25,7 @@ protocol WeatherViewModelProtocol {
     var validWeathers: [Weather] { get }
     var hourWeathers: [[Hour]] { get }
     var hours: [String] { get }
+    var cachedHours: [Int: [String]] { get }
 
     func getWeather(completion: @escaping (Result<Void, Error>) -> Void)
     func formatWeatherDate(_ dateString: String, minTemp: Int, maxTemp: Int) -> String
@@ -52,11 +53,11 @@ class WeatherViewModel: WeatherViewModelProtocol {
     private(set) var validWeathers = [Weather]()
     private(set) var hourWeathers = [[Hour]]()
     private(set) var hours = [String]()
+    private(set) var cachedHours: [Int: [String]] = [:]
 
     // MARK: - Init
     init(weatherService: WeatherServiceProtocol = WeatherService()) {
         self.weatherService = weatherService
-        calculateHours(for: cities[0], index: 0)
     }
 
     // MARK: - Public Methods
@@ -75,8 +76,13 @@ class WeatherViewModel: WeatherViewModelProtocol {
     }
 
     func getHours(_ indexPath: Int) -> [String] {
-        calculateHours(for: cities[indexPath], index: indexPath)
-        return hours
+        if let cachedHours = getCachedHours(forCityIndex: indexPath) {
+            return cachedHours
+        } else {
+            let hours = calculateHours(for: cities[indexPath], index: indexPath)
+            cacheHours(hours, forCityIndex: indexPath)
+            return hours
+        }
     }
 
     func formatWeatherDate(_ dateString: String, minTemp: Int, maxTemp: Int) -> String {
@@ -97,7 +103,15 @@ class WeatherViewModel: WeatherViewModelProtocol {
 
 // MARK: - Private Methods
 private extension WeatherViewModel {
-    func calculateHours(for city: City, index: Int) {
+    func cacheHours(_ hours: [String], forCityIndex index: Int) {
+        cachedHours[index] = hours
+    }
+
+    func getCachedHours(forCityIndex index: Int) -> [String]? {
+        return cachedHours[index]
+    }
+
+    func calculateHours(for city: City, index: Int) -> [String] {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:00 a"
         formatter.timeZone = TimeZone(secondsFromGMT: city.gmtOffset * 3600)
@@ -122,5 +136,7 @@ private extension WeatherViewModel {
                 }
             }
         }
+
+        return hours
     }
 }
