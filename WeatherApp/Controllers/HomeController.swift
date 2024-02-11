@@ -193,7 +193,7 @@ private extension HomeController {
         }
 
         optionImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.centerY.equalTo(accountImageView.snp.centerY)
             make.trailing.equalToSuperview().inset(27)
             make.width.equalTo(34)
             make.height.equalTo(17)
@@ -283,9 +283,7 @@ private extension HomeController {
 // MARK: - UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension HomeController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        collectionView == collectionViewWeather ?
-        weatherViewModel.getHours().count - 1 :
-        weatherViewModel.cities.count
+        collectionView == collectionViewWeather ? 24 : weatherViewModel.cities.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -366,9 +364,11 @@ private extension HomeController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherCell", for: indexPath) as? WeatherCell else {
             fatalError("Unable to dequeue WeatherCell")
         }
-        let temp = String(weatherViewModel.hourWeathers[cityIndex][indexPath.row].temp ?? 0)
-        let description = weatherViewModel.getHours()[indexPath.item]
+        let description = weatherViewModel.getHours(cityIndex)[indexPath.row]
         let icon = weatherViewModel.hourWeathers[cityIndex][indexPath.row].condition ?? ""
+        let temp = indexPath.row == 0 ?
+        String(weatherViewModel.validWeathers[cityIndex].fact.temp) :
+        String(weatherViewModel.hourWeathers[cityIndex][indexPath.row].temp ?? 0)
         cell.configure(with: CellData(city: nil, temp: temp, img: nil, icon: icon, description: description))
         return cell
     }

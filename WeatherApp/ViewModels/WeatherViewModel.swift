@@ -28,7 +28,7 @@ protocol WeatherViewModelProtocol {
 
     func getWeather(completion: @escaping (Result<Void, Error>) -> Void)
     func formatWeatherDate(_ dateString: String, minTemp: Int, maxTemp: Int) -> String
-    func getHours() -> [String]
+    func getHours(_ indexPath: Int) -> [String]
 }
 
 // MARK: - WeatherViewModel
@@ -37,16 +37,16 @@ class WeatherViewModel: WeatherViewModelProtocol {
     private let weatherService: WeatherServiceProtocol
 
     let cities: [City] = [
-        City(name: "Moscow", latitude: 55.75396, longitude: 37.620393),
-        City(name: "Samara", latitude: 53.241505, longitude: 50.221245),
-        City(name: "Kazan", latitude: 55.796391, longitude: 49.108891),
-        City(name: "Vladivostok", latitude: 43.119809, longitude: 131.886924),
-        City(name: "Tyumen", latitude: 57.161297, longitude: 65.525017),
-        City(name: "Krasnoyarsk", latitude: 56.015283, longitude: 92.893248),
-        City(name: "Sochi", latitude: 43.588348, longitude: 39.729996),
-        City(name: "Ufa", latitude: 54.733334, longitude: 55.972055),
-        City(name: "Krasnodar", latitude: 45.039268, longitude: 38.987221),
-        City(name: "Voronezh", latitude: 51.675497, longitude: 39.208882)
+        City(name: "Moscow", latitude: 55.75396, longitude: 37.620393, gmtOffset: 3),
+        City(name: "Samara", latitude: 53.241505, longitude: 50.221245, gmtOffset: 4),
+        City(name: "Kazan", latitude: 55.796391, longitude: 49.108891, gmtOffset: 3),
+        City(name: "Vladivostok", latitude: 43.119809, longitude: 131.886924, gmtOffset: 10),
+        City(name: "Tyumen", latitude: 57.161297, longitude: 65.525017, gmtOffset: 5),
+        City(name: "Krasnoyarsk", latitude: 56.015283, longitude: 92.893248, gmtOffset: 7),
+        City(name: "Sochi", latitude: 43.588348, longitude: 39.729996, gmtOffset: 3),
+        City(name: "Ufa", latitude: 54.733334, longitude: 55.972055, gmtOffset: 5),
+        City(name: "Krasnodar", latitude: 45.039268, longitude: 38.987221, gmtOffset: 3),
+        City(name: "Voronezh", latitude: 51.675497, longitude: 39.208882, gmtOffset: 3)
     ]
 
     private(set) var validWeathers = [Weather]()
@@ -56,7 +56,7 @@ class WeatherViewModel: WeatherViewModelProtocol {
     // MARK: - Init
     init(weatherService: WeatherServiceProtocol = WeatherService()) {
         self.weatherService = weatherService
-        calculateHours()
+        calculateHours(for: cities[0], index: 0)
     }
 
     // MARK: - Public Methods
@@ -74,7 +74,8 @@ class WeatherViewModel: WeatherViewModelProtocol {
         }
     }
 
-    func getHours() -> [String] {
+    func getHours(_ indexPath: Int) -> [String] {
+        calculateHours(for: cities[indexPath], index: indexPath)
         return hours
     }
 
@@ -96,13 +97,29 @@ class WeatherViewModel: WeatherViewModelProtocol {
 
 // MARK: - Private Methods
 private extension WeatherViewModel {
-    func calculateHours() {
+    func calculateHours(for city: City, index: Int) {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:00 a"
+        formatter.timeZone = TimeZone(secondsFromGMT: city.gmtOffset * 3600)
+
+        let currentDate = Date()
+        let calendar = Calendar.current
 
         hours = ["Now"] + (1...24).compactMap { hour in
-            Calendar.current.date(byAdding: .hour, value: hour, to: Date()).map {
-                formatter.string(from: $0)
+            calendar.date(byAdding: .hour, value: hour, to: currentDate)
+                .map { formatter.string(from: $0) }
+        }
+
+        if hourWeathers.count != 0 {
+            for (ind, hour) in hours.enumerated() {
+                guard ind != 24, let hourValue = Int(hour.components(separatedBy: CharacterSet(charactersIn: " :")).first ?? "0") else { break }
+
+                let isAM = hour.contains("AM")
+                let hourWeatherIndex = isAM ? hourValue : hourValue + 12
+
+                if let hourWeather = hourWeathers[index].first(where: { Int($0.hour ?? "0") == hourWeatherIndex }) {
+                    hourWeathers[index][ind].temp = hourWeather.temp
+                }
             }
         }
     }

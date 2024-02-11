@@ -7,5 +7,6 @@ target 'WeatherApp' do
 
   # Pods for WeatherApp
   pod 'SnapKit'
+  pod 'SVGKit'
 
 end

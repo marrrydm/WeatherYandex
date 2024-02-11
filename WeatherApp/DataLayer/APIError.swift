@@ -12,4 +12,6 @@ enum APIError: Error {
     case invalidURL
     case dataDecodingFailed
     case invalidCoordinates
+    case invalidImageData
+    case invalidIcon
 }

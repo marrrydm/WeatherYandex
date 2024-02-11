@@ -135,8 +135,8 @@
 		F8C50DB32B769E9F00A979AE /* SupportFiles */ = {
 			isa = PBXGroup;
 			children = (
-				F8C50DD12B77B55100A979AE /* Constants.swift */,
 				F8C50DE82B78E93200A979AE /* Builder.swift */,
+				F8C50DD12B77B55100A979AE /* Constants.swift */,
 				F8C50DD52B77E92000A979AE /* Fonts */,
 				F8C50DB42B769EA700A979AE /* Extensions */,
 				F8C50DBB2B769F1000A979AE /* Localizable.strings */,

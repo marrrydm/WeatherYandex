@@ -69,7 +69,7 @@ final class NetworkManager {
             }
             task.resume()
         }
-
+        
         dispatchGroup.notify(queue: .main) {
             completion(.success(self.weatherArray.compactMap { $0 }))
         }
