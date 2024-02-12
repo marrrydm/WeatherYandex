@@ -3,24 +3,33 @@ PODS:
     - CocoaLumberjack/Core (= 3.8.4)
   - CocoaLumberjack/Core (3.8.4)
   - SnapKit (5.6.0)
-  - SVGKit (3.0.0):
+  - SVGKit (2.1.0):
     - CocoaLumberjack (~> 3.0)
 
 DEPENDENCIES:
   - SnapKit
-  - SVGKit
+  - SVGKit (from `https://github.com/SVGKit/SVGKit.git`, branch `2.x`)
 
 SPEC REPOS:
   trunk:
     - CocoaLumberjack
     - SnapKit
-    - SVGKit
+
+EXTERNAL SOURCES:
+  SVGKit:
+    :branch: 2.x
+    :git: https://github.com/SVGKit/SVGKit.git
+
+CHECKOUT OPTIONS:
+  SVGKit:
+    :commit: c40671b9a264f8f71831c4e0452736debfae2164
+    :git: https://github.com/SVGKit/SVGKit.git
 
 SPEC CHECKSUMS:
   CocoaLumberjack: df59726690390bb8aaaa585938564ba1c8dbbb44
   SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
-  SVGKit: 1ad7513f8c74d9652f94ed64ddecda1a23864dea
+  SVGKit: 8a2fc74258bdb2abb54d3b65f3dd68b0277a9c4d
 
-PODFILE CHECKSUM: 4ceabc32399cd55cfbb9bb5a045dced1fe87c378
+PODFILE CHECKSUM: 89af875ac9b943ec1f7255edb0e25a32e5cd6716
 
 COCOAPODS: 1.12.1

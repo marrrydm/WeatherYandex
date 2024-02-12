@@ -7,6 +7,6 @@ target 'WeatherApp' do
 
   # Pods for WeatherApp
   pod 'SnapKit'
-  pod 'SVGKit'
+  pod 'SVGKit', :git => 'https://github.com/SVGKit/SVGKit.git', :branch => '2.x'
 
 end

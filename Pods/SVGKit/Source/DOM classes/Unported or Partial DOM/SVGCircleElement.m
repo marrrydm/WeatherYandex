@@ -6,7 +6,6 @@
 //
 
 #import "SVGCircleElement.h"
-#import "SVGKDefine_Private.h"
 
 @implementation SVGCircleElement
 

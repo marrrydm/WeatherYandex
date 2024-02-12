@@ -5,7 +5,6 @@
 #import "SVGGElement.h"
 #import "SVGLinearGradientElement.h"
 #import "SVGRadialGradientElement.h"
-#import "SVGKDefine_Private.h"
 
 @implementation SVGGradientElement
 

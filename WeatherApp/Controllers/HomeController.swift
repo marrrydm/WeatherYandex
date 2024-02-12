@@ -6,6 +6,7 @@
 //
 
 import SnapKit
+import SVGKit
 import UIKit
 
 class HomeController: UIViewController {
@@ -250,7 +251,7 @@ private extension HomeController {
         collectionViewWeather.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-5)
-            make.height.equalTo(150)
+            make.height.equalTo(130)
         }
     }
 
@@ -320,6 +321,7 @@ private extension HomeController {
                 DispatchQueue.main.async {
                     self.handleWeatherData()
                     self.setupCollection()
+                    self.collectionViewWeather.reloadData()
                 }
             case .failure(let error):
                 self.handleError(error)
@@ -329,7 +331,9 @@ private extension HomeController {
 
     func handleWeatherData() {
         if let firstWeather = weatherViewModel.validWeathers.first {
-            updateUIWithWeatherData(city: "Moscow", firstWeather)
+            DispatchQueue.main.async {
+                self.updateUIWithWeatherData(city: "Moscow", firstWeather)
+            }
         }
     }
 
@@ -340,7 +344,7 @@ private extension HomeController {
 
 // MARK: - Update UI
 private extension HomeController {
-    func updateUIWithWeatherData(city: String, _ cityWeather: Weather) {
+    private func updateUIWithWeatherData(city: String, _ cityWeather: Weather) {
         cityLabel.text = city
         infoLabel.text = weatherViewModel.formatWeatherDate(cityWeather.forecasts.first?.date ?? Constants.date, minTemp: cityWeather.forecasts.first?.parts.day.tempMin ?? 0, maxTemp: cityWeather.forecasts.first?.parts.day.tempMax ?? 0)
         currentTempLabel.text = "\(cityWeather.fact.temp)\(Constants.celsius)"
@@ -364,12 +368,16 @@ private extension HomeController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "WeatherCell", for: indexPath) as? WeatherCell else {
             fatalError("Unable to dequeue WeatherCell")
         }
+        var iconImg: SVGKImage?
         let description = weatherViewModel.getHours(cityIndex)[indexPath.row]
-        let icon = weatherViewModel.hourWeathers[cityIndex][indexPath.row].condition ?? ""
+        if let icon = weatherViewModel.hourWeathers[cityIndex][indexPath.row].icon {
+            iconImg = weatherViewModel.getImg(for: icon)
+        }
         let temp = indexPath.row == 0 ?
         String(weatherViewModel.validWeathers[cityIndex].fact.temp) :
         String(weatherViewModel.hourWeathers[cityIndex][indexPath.row].temp ?? 0)
-        cell.configure(with: CellData(city: nil, temp: temp, img: nil, icon: icon, description: description))
+
+        cell.configure(with: CellData(city: nil, temp: temp, img: nil, icon: iconImg?.uiImage, description: description))
         return cell
     }
 }

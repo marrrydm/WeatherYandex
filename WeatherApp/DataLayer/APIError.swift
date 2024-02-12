@@ -14,4 +14,5 @@ enum APIError: Error {
     case invalidCoordinates
     case invalidImageData
     case invalidIcon
+    case iconLoadingFailed
 }

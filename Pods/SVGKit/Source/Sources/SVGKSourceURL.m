@@ -1,5 +1,4 @@
 #import "SVGKSourceURL.h"
-#import "SVGKDefine_Private.h"
 
 @implementation SVGKSourceURL
 
@@ -10,9 +9,6 @@
 
 + (SVGKSource*)sourceFromURL:(NSURL*)u {
 	NSInputStream* stream = [self internalCreateInputStreamFromURL:u];
-    if (!stream) {
-        return nil;
-    }
 	
 	SVGKSourceURL* s = [[SVGKSourceURL alloc] initWithInputSteam:stream];
 	s.URL = u;
@@ -20,11 +16,8 @@
 	return s;
 }
 
-+(nullable NSInputStream*) internalCreateInputStreamFromURL:(nullable NSURL*) u
++(NSInputStream*) internalCreateInputStreamFromURL:(NSURL*) u
 {
-    if (!u) {
-        return nil;
-    }
 	NSInputStream* stream = [NSInputStream inputStreamWithURL:u];
 	
 	if( stream == nil )
@@ -38,7 +31,7 @@
 		
 		if( tempData == nil )
 		{
-            SVGKitLogError(@"Error internally in Apple's NSData trying to read from URL '%@'. Error = %@", u, errorWithNSData);
+			@throw [NSException exceptionWithName:@"NSDataCrashed" reason:[NSString stringWithFormat:@"Error internally in Apple's NSData trying to read from URL '%@'. Error = %@", u, errorWithNSData] userInfo:@{NSLocalizedDescriptionKey:errorWithNSData}];
 		}
 		else
 			stream = [[NSInputStream alloc] initWithData:tempData];

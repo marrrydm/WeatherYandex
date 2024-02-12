@@ -5,8 +5,6 @@
 
 #import "NodeList+Mutable.h" // needed for access to underlying array, because SVG doesnt specify how lists are made mutable
 
-#import "SVGKDefine_Private.h"
-
 @implementation Document
 
 @synthesize doctype;

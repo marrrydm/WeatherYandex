@@ -1,6 +1,5 @@
 #import "CSSValueList.h"
 #import "CSSValue_ForSubclasses.h"
-#import "SVGKDefine_Private.h"
 
 @interface CSSValueList()
 

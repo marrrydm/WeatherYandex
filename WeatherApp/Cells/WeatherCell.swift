@@ -80,10 +80,13 @@ class WeatherCell: UICollectionViewCell {
 // MARK: - Configuration
 extension WeatherCell: ConfigurableCell {
     func configure(with data: CellData) {
-        if let temp = data.temp, let description = data.description, let icon = data.icon, let iconImage = WeatherIconHelper.image(forIcon: icon) {
+        if let temp = data.temp, let description = data.description, let iconImage = data.icon {
             temperatureLabel.text = temp + Constants.celsius
             descriptionLabel.text = description
             weatherIconImageView.image = iconImage
         }
+
+
+        layoutIfNeeded()
     }
 }

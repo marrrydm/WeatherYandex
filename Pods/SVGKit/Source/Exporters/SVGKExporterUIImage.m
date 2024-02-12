@@ -1,7 +1,5 @@
 #import "SVGKExporterUIImage.h"
-#import "SVGKDefine_Private.h"
 
-#if SVGKIT_UIKIT
 #import "SVGKImage+CGContext.h" // needed for Context calls
 
 @implementation SVGKExporterUIImage
@@ -37,5 +35,3 @@
 }
 
 @end
-
-#endif /* SVGKIT_UIKIT */

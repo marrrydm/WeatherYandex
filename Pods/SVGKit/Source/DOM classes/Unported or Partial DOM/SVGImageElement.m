@@ -7,9 +7,6 @@
 #import "SVGKImage.h"
 #import "SVGKSourceURL.h"
 #import "SVGKSourceNSData.h"
-#import "SVGKInlineResource.h"
-
-#import "SVGKDefine_Private.h"
 
 CGImageRef SVGImageCGImage(UIImage *img)
 {
@@ -86,15 +83,11 @@ CGImageRef SVGImageCGImage(UIImage *img)
 	{
 		effectiveSource = [self.rootOfCurrentDocumentFragment.source sourceFromRelativePath:_href];
 		NSInputStream *stream = effectiveSource.stream;
-        if (stream) {
-            [stream open]; // if we do this, we CANNOT parse from this source again in future
-            NSError *error = nil;
-            imageData = [NSData dataWithContentsOfStream:stream initialCapacity:NSUIntegerMax error:&error];
-            if( error )
-                SVGKitLogError(@"[%@] ERROR: unable to read stream from %@ into NSData: %@", [self class], _href, error);
-        } else {
-            SVGKitLogError(@"[%@] ERROR: unable to load the source from URL: %@", [self class], _href);
-        }
+		[stream open]; // if we do this, we CANNOT parse from this source again in future
+        NSError *error = nil;
+		imageData = [NSData dataWithContentsOfStream:stream initialCapacity:NSUIntegerMax error:&error];
+		if( error )
+			SVGKitLogError(@"[%@] ERROR: unable to read stream from %@ into NSData: %@", [self class], _href, error);
 	}
 	
 	/** Now we have some raw bytes, try to load using Apple's image loaders
@@ -131,11 +124,6 @@ CGImageRef SVGImageCGImage(UIImage *img)
             {
                 image = svg.UIImage;
             }
-        }
-        
-        // If still fail, use the broken image placeholder
-        if (!image) {
-            image = SVGKGetBrokenImageRepresentation();
         }
     }
     

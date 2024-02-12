@@ -30,7 +30,6 @@
 		F8C50DDD2B77E93200A979AE /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8C50DD92B77E93100A979AE /* Poppins-Regular.ttf */; };
 		F8C50DE32B783BCA00A979AE /* ModalController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C50DE22B783BCA00A979AE /* ModalController.swift */; };
 		F8C50DE52B783BE000A979AE /* OptionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C50DE42B783BE000A979AE /* OptionController.swift */; };
-		F8C50DE72B783FC400A979AE /* WeatherIconHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C50DE62B783FC400A979AE /* WeatherIconHelper.swift */; };
 		F8C50DE92B78E93200A979AE /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C50DE82B78E93200A979AE /* Builder.swift */; };
 		F8C50DEB2B78F0FD00A979AE /* CellData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C50DEA2B78F0FD00A979AE /* CellData.swift */; };
 /* End PBXBuildFile section */
@@ -63,7 +62,6 @@
 		F8C50DD92B77E93100A979AE /* Poppins-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F8C50DE22B783BCA00A979AE /* ModalController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalController.swift; sourceTree = "<group>"; };
 		F8C50DE42B783BE000A979AE /* OptionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionController.swift; sourceTree = "<group>"; };
-		F8C50DE62B783FC400A979AE /* WeatherIconHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIconHelper.swift; sourceTree = "<group>"; };
 		F8C50DE82B78E93200A979AE /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
 		F8C50DEA2B78F0FD00A979AE /* CellData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,7 +148,6 @@
 			children = (
 				F8C50DB52B769EBA00A979AE /* Localization.swift */,
 				F8C50DBC2B76A0D100A979AE /* UIView.swift */,
-				F8C50DE62B783FC400A979AE /* WeatherIconHelper.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -345,7 +342,6 @@
 				F8C50DEB2B78F0FD00A979AE /* CellData.swift in Sources */,
 				F8C50DB62B769EBA00A979AE /* Localization.swift in Sources */,
 				F8C50DA22B76445900A979AE /* SceneDelegate.swift in Sources */,
-				F8C50DE72B783FC400A979AE /* WeatherIconHelper.swift in Sources */,
 				F8C50DD22B77B55100A979AE /* Constants.swift in Sources */,
 				F8C50DE52B783BE000A979AE /* OptionController.swift in Sources */,
 				F8C50DD42B77B55700A979AE /* APIError.swift in Sources */,

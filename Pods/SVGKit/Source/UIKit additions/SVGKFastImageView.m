@@ -1,5 +1,4 @@
 #import "SVGKFastImageView.h"
-#import "SVGKDefine_Private.h"
 
 @interface SVGKFastImageView ()
 @property(nonatomic,readwrite) NSTimeInterval timeIntervalForLastReRenderOfSVGFromMemory;
@@ -114,10 +113,8 @@
 -(void) removeInternalRedrawOnResizeObservers
 {
   if (!self.didRegisterInternalRedrawObservers) return;
-	[self removeObserver:self forKeyPath:@"layer" context:(__bridge void * _Nullable)(internalContextPointerBecauseApplesDemandsIt)];
-#if !SVGKIT_MAC || USE_SUBLAYERS_INSTEAD_OF_BLIT
+	[self removeObserver:self  forKeyPath:@"layer" context:(__bridge void * _Nullable)(internalContextPointerBecauseApplesDemandsIt)];
 	[self.layer removeObserver:self forKeyPath:@"transform" context:(__bridge void * _Nullable)(internalContextPointerBecauseApplesDemandsIt)];
-#endif
   self.didRegisterInternalRedrawObservers = false;
 }
 

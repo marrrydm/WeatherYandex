@@ -1,5 +1,4 @@
 #import "CAShapeLayerWithHitTest.h"
-#import "SVGKDefine_Private.h"
 
 /*! Used by the main ShapeElement (and all subclasses) to do perfect "containsPoint" calculations via Apple's API calls
  

@@ -6,16 +6,21 @@
 //
 
 import Foundation
+import SVGKit
 
 // MARK: - WeatherServiceProtocol
 protocol WeatherServiceProtocol {
     func getWeather(forCities cities: [City], completion: @escaping (Result<[Weather?], Error>) -> Void)
+    func getIcons(forHours hours: [[Hour]], completion: @escaping (Result<[String: SVGKImage], Error>) -> Void)
 }
 
 // MARK: - WeatherService
 class WeatherService: WeatherServiceProtocol {
     func getWeather(forCities cities: [City], completion: @escaping (Result<[Weather?], Error>) -> Void) {
         NetworkManager.shared.getWeather(forCities: cities, completion: completion)
+    }
+    func getIcons(forHours hours: [[Hour]], completion: @escaping (Result<[String: SVGKImage], Error>) -> Void) {
+        NetworkManager.shared.loadWeatherIcons(for: hours, completion: completion)
     }
 }
 
@@ -26,10 +31,13 @@ protocol WeatherViewModelProtocol {
     var hourWeathers: [[Hour]] { get }
     var hours: [String] { get }
     var cachedHours: [Int: [String]] { get }
+    var weatherIcons: [String: SVGKImage] { get }
 
     func getWeather(completion: @escaping (Result<Void, Error>) -> Void)
+    func loadWeatherIcons(completion: @escaping (Result<Void, Error>) -> Void)
     func formatWeatherDate(_ dateString: String, minTemp: Int, maxTemp: Int) -> String
     func getHours(_ indexPath: Int) -> [String]
+    func getImg(for icon: String) -> SVGKImage?
 }
 
 // MARK: - WeatherViewModel
@@ -54,6 +62,7 @@ class WeatherViewModel: WeatherViewModelProtocol {
     private(set) var hourWeathers = [[Hour]]()
     private(set) var hours = [String]()
     private(set) var cachedHours: [Int: [String]] = [:]
+    private(set) var weatherIcons: [String: SVGKImage] = [:]
 
     // MARK: - Init
     init(weatherService: WeatherServiceProtocol = WeatherService()) {
@@ -68,6 +77,26 @@ class WeatherViewModel: WeatherViewModelProtocol {
             case .success(let weathers):
                 self.validWeathers = weathers.compactMap { $0 }
                 self.hourWeathers = self.validWeathers.map { $0.forecasts[0].hours }
+                self.loadWeatherIcons { loadIconsResult in
+                    switch loadIconsResult {
+                    case .success:
+                        completion(.success(()))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func loadWeatherIcons(completion: @escaping (Result<Void, Error>) -> Void) {
+        weatherService.getIcons(forHours: hourWeathers) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let icons):
+                self.weatherIcons = icons
                 completion(.success(()))
             case .failure(let error):
                 completion(.failure(error))
@@ -83,6 +112,10 @@ class WeatherViewModel: WeatherViewModelProtocol {
             cacheHours(hours, forCityIndex: indexPath)
             return hours
         }
+    }
+
+    func getImg(for icon: String) -> SVGKImage? {
+        return weatherIcons[icon]
     }
 
     func formatWeatherDate(_ dateString: String, minTemp: Int, maxTemp: Int) -> String {
@@ -126,6 +159,10 @@ private extension WeatherViewModel {
 
         if hourWeathers.count != 0 {
             for (ind, hour) in hours.enumerated() {
+                if ind == 0 {
+                    continue
+                }
+
                 guard ind != 24, let hourValue = Int(hour.components(separatedBy: CharacterSet(charactersIn: " :")).first ?? "0") else { break }
 
                 let isAM = hour.contains("AM")
@@ -136,7 +173,6 @@ private extension WeatherViewModel {
                 }
             }
         }
-
         return hours
     }
 }

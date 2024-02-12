@@ -1,5 +1,4 @@
 #import "SVGKParseResult.h"
-#import "SVGKDefine_Private.h"
 
 @implementation SVGKParseResult
 

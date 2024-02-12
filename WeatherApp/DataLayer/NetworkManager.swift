@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SVGKit
 
 // MARK: - WeatherDataHandler Protocol
 protocol WeatherDataHandler {
@@ -25,6 +26,7 @@ final class NetworkManager {
     static let shared = NetworkManager()
 
     private(set) var weatherArray: [Weather?] = Array(repeating: nil, count: 10)
+    private(set) var iconsResult: [String: SVGKImage] = [:]
     private let weatherDataHandler: WeatherDataHandler
 
     // MARK: - Init
@@ -69,9 +71,42 @@ final class NetworkManager {
             }
             task.resume()
         }
-        
+
         dispatchGroup.notify(queue: .main) {
             completion(.success(self.weatherArray.compactMap { $0 }))
+        }
+    }
+
+    func loadWeatherIcons(for hours: [[Hour]], completion: @escaping (Result<[String: SVGKImage], Error>) -> Void) {
+        let dispatchGroup = DispatchGroup()
+
+        for (_, cityHours) in hours.enumerated() {
+            for (_, hour) in cityHours.enumerated() {
+                guard let icon = hour.icon else { continue }
+
+                guard let url = URL(string: "https://yastatic.net/weather/i/icons/funky/dark/\(icon).svg") else { continue }
+
+                dispatchGroup.enter()
+                let task = URLSession.shared.dataTask(with: url) { data, _, error in
+                    defer {
+                        dispatchGroup.leave()
+                    }
+
+                    guard let data = data, error == nil else {
+                        completion(.failure(APIError.invalidIcon))
+                        return
+                    }
+
+                    if let svgImage = SVGKImage(data: data) {
+                        self.iconsResult[icon] = svgImage
+                    }
+                }
+                task.resume()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completion(.success(self.iconsResult))
         }
     }
 }

@@ -6,7 +6,6 @@
 //
 
 #import "CGPathAdditions.h"
-#import <stdlib.h>
 
 void applier (void *info, const CGPathElement *element);
 
